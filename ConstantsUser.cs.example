@@ -1,0 +1,8 @@
+﻿namespace StreamMarkers
+{
+    public partial class Constants: ConstantsBase
+    {
+        public new const string CLIENT_ID = "--clientid--";
+        public new const string CLIENT_SECRET = "--clientsecret--";
+    }
+}

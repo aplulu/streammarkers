@@ -1,0 +1,22 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <vertical child-control-height="false" spacing="2" pad-top="2">
+    <horizontal horizontal-fit="PreferredSize" spacing="10">
+      <text text="Twitch User: " align="Center"/>
+      <text text="~logged-user" align="Center"/>
+      <button text="Login" on-click="login-click" click-event="hide-modal,twitch-login-browser" active="~is-not-logged"/>
+      <button text="Logout" on-click="logout-click" active="~is-logged"/>
+    </horizontal>
+  </vertical>
+
+  <modal show-event="twitch-login-browser" hide-event="hide-modal" move-to-center="true" click-off-closes="false" size-delta-x="80" size-delta-y="50">
+    <vertical child-control-height="true" vertical-fit="PreferredSize" horizontal-fit="PreferredSize">
+      <horizontal bg="panel-top" pad-left="15" pad-right="15" horizontal-fit="PreferredSize">
+        <text text="Twitch Login" align="Center" font-size="8"/>
+      </horizontal>
+      <text id="twitch-login-text" text="Login to Twitch in your desktop browser." word-wrapping="true" align="Center" pad-top="10"/>
+      <horizontal pad-top="10">
+        <button text="Close" pref-width="32" pref-height="10" click-event="hide-modal"/>
+      </horizontal>
+    </vertical>
+  </modal>
+</bg>
