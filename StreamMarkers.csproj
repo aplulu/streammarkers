@@ -6,6 +6,8 @@
     <ItemGroup>
       <EmbeddedResource Include="Views\Settings.bsml" />
       <EmbeddedResource Include="manifest.json" />
+      <None Remove="Resources\message.html" />
+      <EmbeddedResource Include="Resources\message.html" />
     </ItemGroup>
 
     <ItemGroup>

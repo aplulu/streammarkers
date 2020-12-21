@@ -2,7 +2,7 @@
 {
     public partial class Constants: ConstantsBase
     {
-        public new const string CLIENT_ID = "--clientid--";
-        public new const string CLIENT_SECRET = "--clientsecret--";
+        public new static readonly string CLIENT_ID = "--clientid--";
+        public new static readonly string CLIENT_SECRET = "--clientsecret--";
     }
 }
