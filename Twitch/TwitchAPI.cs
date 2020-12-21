@@ -36,7 +36,7 @@ namespace StreamMarkers.Twitch
         /**
          * ストリームマーカーの作成
          */
-        public static async void CreateStreamMarkers(Token token, string description)
+        public static async Task CreateStreamMarkers(Token token, string description)
         {
             if (description.Length > 140)
             {

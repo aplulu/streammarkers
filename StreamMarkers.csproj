@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net472</TargetFramework>
+        <AssemblyVersion>0.1.1.0</AssemblyVersion>
+        <PackageVersion>0.1.1.0</PackageVersion>
+        <InformationalVersion>0.1.1</InformationalVersion>
+        <Authors>Aplulu</Authors>
+        <Copyright>Copyright (c) 2020 Aplulu</Copyright>
+        <RepositoryUrl>https://github.com/aplulu/StreamMarkers</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>

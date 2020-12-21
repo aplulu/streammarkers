@@ -1,4 +1,5 @@
-﻿using IPA;
+﻿using System;
+using IPA;
 using IPALogger = IPA.Logging.Logger;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -79,31 +80,39 @@ namespace StreamMarkers
                 Task.Run(() =>
                 {
                     var token = PluginConfig.Instance.GetToken();
-                    if (token != null && token.IsValid())
+                    if (token == null || !token.IsValid())
                     {
-                        try
-                        {
-                            // アクセストークン更新
-                            var refreshed = TwitchAPI.RefreshTokenIfNeeded(token);
-                            if (refreshed.Result)
-                            {
-                                Log("Token refreshed");
-                                context.Post((state) =>
-                                {
-                                    PluginConfig.Instance.SetToken(token);
-                                }, null);
-                            }
-                            var setupData = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
-                            var level = setupData.difficultyBeatmap.level;
+                        Log("Access Token is not set or not valid.");
+                        return;
+                    }
 
-                            var description = level.songName + " - " + level.songAuthorName;
-
-                            TwitchAPI.CreateStreamMarkers(token, description);
-                        }
-                        catch (TwitchAPIException e)
+                    try
+                    {
+                        // アクセストークン更新
+                        var refreshed = TwitchAPI.RefreshTokenIfNeeded(token);
+                        if (refreshed.Result)
                         {
-                            Log($"failed to create StreamMarker: {e.Message}");
+                            Log("Token refreshed");
+                            context.Post((state) => { PluginConfig.Instance.SetToken(token); }, null);
                         }
+
+                        var setupData = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
+                        var level = setupData.difficultyBeatmap.level;
+
+                        var description = level.songName + " - " + level.songAuthorName;
+
+                        TwitchAPI.CreateStreamMarkers(token, description).Wait();
+                    }
+                    catch (AggregateException e)
+                    {
+                        foreach (var inner in e.InnerExceptions)
+                        {
+                            Log($"failed to create StreamMarker: {inner.Message}");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log($"failed to create StreamMarker: {e.Message}");
                     }
                 });
             }
