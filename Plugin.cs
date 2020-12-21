@@ -2,6 +2,7 @@
 using IPALogger = IPA.Logging.Logger;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Settings;
@@ -51,7 +52,8 @@ namespace StreamMarkers
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
             BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh += OnEarlyMenuSceneLoadedFresh;
             
-            WebServer.Start();
+            var context = SynchronizationContext.Current;
+            WebServer.Start(context);
         }
 
         private void OnEarlyMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)
@@ -73,6 +75,7 @@ namespace StreamMarkers
         {
             if (newScene.name.Equals("GameCore"))
             {
+                var context = SynchronizationContext.Current;
                 Task.Run(() =>
                 {
                     var token = PluginConfig.Instance.GetToken();
@@ -81,11 +84,14 @@ namespace StreamMarkers
                         try
                         {
                             // アクセストークン更新
-                            var refreshed = Twitch.TwitchAPI.RefreshTokenIfNeeded(token);
+                            var refreshed = TwitchAPI.RefreshTokenIfNeeded(token);
                             if (refreshed.Result)
                             {
                                 Log("Token refreshed");
-                                PluginConfig.Instance.SetToken(token);
+                                context.Post((state) =>
+                                {
+                                    PluginConfig.Instance.SetToken(token);
+                                }, null);
                             }
                             var setupData = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
                             var level = setupData.difficultyBeatmap.level;

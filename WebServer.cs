@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using StreamMarkers.Twitch;
 
@@ -16,9 +17,11 @@ namespace StreamMarkers
         public static string ListenAddress { get; private set; } = "localhost:7710";
         private static HttpListener _listener;
         private static Dictionary<string, RequestHandler> _handlers = new Dictionary<string, RequestHandler>();
+        private static SynchronizationContext _context;
 
-        public static void Start()
+        public static void Start(SynchronizationContext context)
         {
+            _context = context;
             _handlers.Clear();
             _handlers.Add("/login", OnLogin);
             _handlers.Add("/callback", OnCallback);
@@ -105,10 +108,12 @@ namespace StreamMarkers
             try
             {
                 var token = TwitchAPI.ExchangeToken(code).Result;
-                Plugin.Log(token.IDToken);
 
-                PluginConfig.Instance.SetToken(token);
-                Plugin.Instance.SettingsViewController.UpdateLoginState();
+                _context.Post((state) =>
+                {
+                    PluginConfig.Instance.SetToken(token);
+                    Plugin.Instance.SettingsViewController.UpdateLoginState();
+                }, null);
 
                 ShowMessage(resp, 200, "Login Complete", "You are now logged in, please return to Beat Saber.");
             }
