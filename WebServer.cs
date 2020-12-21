@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using StreamMarkers.Twitch;
@@ -126,11 +127,23 @@ namespace StreamMarkers
             resp.Headers.Add("Content-Type", "text/html; charset=utf-8");
             try
             {
+                var assembly = Assembly.GetExecutingAssembly();
+                var content = "";
+                using (var stream = assembly.GetManifestResourceStream("StreamMarkers.Resources.message.html"))
+                {
+                    if (stream != null)
+                    {
+                        using (var sr = new StreamReader(stream))
+                        {
+                            content = sr.ReadToEnd();
+                        }
+                    }
+                }
+
                 using (var writer = new StreamWriter(resp.OutputStream, Encoding.UTF8))
                 {
-                    writer.Write("<html><head><title>" + title+ "</title></head><body><p>");
-                    writer.Write(message);
-                    writer.Write("</p></body></html>");
+                    content = content.Replace("{title}", title).Replace("{message}", message);
+                    writer.Write(content);
                 }
 
                 resp.Close();
