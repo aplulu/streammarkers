@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using IPALogger = IPA.Logging.Logger;
 
 namespace StreamMarkers.Twitch
 {
@@ -113,7 +114,7 @@ namespace StreamMarkers.Twitch
          */
         public static async Task<Token> RefreshToken(Token token)
         {
-            Plugin.Log("Refreshing token");
+            Plugin.Log(IPALogger.Level.Info,"Refreshing token");
             var data = new List<KeyValuePair<string, string>>();
             data.Add(new KeyValuePair<string, string>("client_id", Constants.CLIENT_ID));
             data.Add(new KeyValuePair<string, string>("client_secret", Constants.CLIENT_SECRET));

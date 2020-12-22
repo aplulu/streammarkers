@@ -19,7 +19,6 @@ namespace StreamMarkers.ViewControllers
         [UIAction("logout-click")]
         private void OnLogoutClick()
         {
-            Plugin.Log("logout clicked");
             PluginConfig.Instance.SetToken(null);
             UpdateLoginState();
         }

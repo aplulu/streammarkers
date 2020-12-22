@@ -36,12 +36,13 @@ namespace StreamMarkers
             PluginConfig.Instance = config.Generated<PluginConfig>();
         }
         
-        public static void Log(string text,
+        public static void Log(IPALogger.Level level,
+            string text,
             [CallerFilePath] string file = "",
             [CallerMemberName] string member = "",
             [CallerLineNumber] int line = 0)
         {
-            Logger.Info($"[{Name}] {Path.GetFileName(file)}->{member}({line}): {text}");
+            Logger.Log(level, $"[{Name}] {Path.GetFileName(file)}->{member}({line}): {text}");
         }
 
         [OnStart]
@@ -82,7 +83,7 @@ namespace StreamMarkers
                     var token = PluginConfig.Instance.GetToken();
                     if (token == null || !token.IsValid())
                     {
-                        Log("Access Token is not set or not valid.");
+                        Log(IPALogger.Level.Warning, "Access Token is not set or not valid.");
                         return;
                     }
 
@@ -92,7 +93,7 @@ namespace StreamMarkers
                         var refreshed = TwitchAPI.RefreshTokenIfNeeded(token);
                         if (refreshed.Result)
                         {
-                            Log("Token refreshed");
+                            Log(IPALogger.Level.Info, "Token refreshed");
                             context.Post((state) => { PluginConfig.Instance.SetToken(token); }, null);
                         }
 
@@ -107,12 +108,12 @@ namespace StreamMarkers
                     {
                         foreach (var inner in e.InnerExceptions)
                         {
-                            Log($"failed to create StreamMarker: {inner.Message}");
+                            Log(IPALogger.Level.Error, $"failed to create StreamMarker: {inner.Message}");
                         }
                     }
                     catch (Exception e)
                     {
-                        Log($"failed to create StreamMarker: {e.Message}");
+                        Log(IPALogger.Level.Error, $"failed to create StreamMarker: {e.Message}");
                     }
                 });
             }
