@@ -17,10 +17,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="BSML, Version=1.4.2.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="BSML, Version=1.4.5.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>$(BeatSaberPath)\Plugins\BSML.dll</HintPath>
       </Reference>
-      <Reference Include="BS_Utils, Version=1.6.5.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="BS_Utils, Version=1.7.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>$(BeatSaberPath)\Plugins\BS_Utils.dll</HintPath>
       </Reference>
       <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
