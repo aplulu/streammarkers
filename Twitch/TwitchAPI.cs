@@ -13,6 +13,8 @@ namespace StreamMarkers.Twitch
         private static readonly string BASE_URL = "https://api.twitch.tv";
         private static readonly string OAUTH_URL = "https://id.twitch.tv/oauth2";
 
+        public static event Action<Token> TokenRefreshed;
+
         public static string GetAuthorizeUrl()
         {
             return String.Format(
@@ -23,15 +25,13 @@ namespace StreamMarkers.Twitch
         /**
          * アクセストークンが期限切れの場合は更新
          */
-        public static async Task<bool> RefreshTokenIfNeeded(Token token)
+        private static async Task RefreshTokenIfNeeded(Token token)
         {
             if (token.IsExpired())
             {
                 await RefreshToken(token);
-                return true;
+                TokenRefreshed?.Invoke(token);
             }
-
-            return false;
         }
         
         /**
@@ -39,6 +39,8 @@ namespace StreamMarkers.Twitch
          */
         public static async Task CreateStreamMarkers(Token token, string description)
         {
+            await RefreshTokenIfNeeded(token);
+            
             if (description.Length > 140)
             {
                 description = description.Substring(0, 137) + "...";
@@ -101,7 +103,10 @@ namespace StreamMarkers.Twitch
             
                 var respToken = JsonConvert.DeserializeObject<TokenResponse>(respContent);
 
-                return Token.FromResponse(respToken);
+                var token = Token.FromResponse(respToken);
+                TokenRefreshed?.Invoke(token);
+                
+                return token;
             }
             finally
             {

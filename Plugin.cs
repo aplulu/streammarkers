@@ -26,6 +26,8 @@ namespace StreamMarkers
         
         public static Plugin Instance { get; private set; }
 
+        private SynchronizationContext _context;
+
         public SettingsViewController SettingsViewController { get; set; }
         
         [Init]
@@ -53,9 +55,10 @@ namespace StreamMarkers
 
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
             BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh += OnEarlyMenuSceneLoadedFresh;
+            TwitchAPI.TokenRefreshed += OnTokenRefreshed;
             
-            var context = SynchronizationContext.Current;
-            WebServer.Start(context);
+            _context = SynchronizationContext.Current;
+            WebServer.Start(_context);
         }
 
         private void OnEarlyMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)
@@ -68,12 +71,14 @@ namespace StreamMarkers
         public void OnExit()
         {
             SceneManager.activeSceneChanged -= OnActiveSceneChanged;
-            
+            BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh -= OnEarlyMenuSceneLoadedFresh;
+            TwitchAPI.TokenRefreshed -= OnTokenRefreshed;
+
             WebServer.Stop();
         }
 
 
-        public void OnActiveSceneChanged(Scene oldScene, Scene newScene)
+        private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
         {
             if (newScene.name.Equals("GameCore"))
             {
@@ -89,14 +94,6 @@ namespace StreamMarkers
 
                     try
                     {
-                        // アクセストークン更新
-                        var refreshed = TwitchAPI.RefreshTokenIfNeeded(token);
-                        if (refreshed.Result)
-                        {
-                            Log(IPALogger.Level.Info, "Token refreshed");
-                            context.Post((state) => { PluginConfig.Instance.SetToken(token); }, null);
-                        }
-
                         var setupData = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
                         var level = setupData.difficultyBeatmap.level;
 
@@ -117,6 +114,15 @@ namespace StreamMarkers
                     }
                 });
             }
+        }
+        
+        private void OnTokenRefreshed(Token token)
+        {
+            _context.Post((state) =>
+            {
+                PluginConfig.Instance.SetToken(token);
+                Plugin.Instance.SettingsViewController.UpdateLoginState();
+            }, null);
         }
     }
 }
