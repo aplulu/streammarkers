@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net472</TargetFramework>
-        <AssemblyVersion>0.1.1.0</AssemblyVersion>
-        <PackageVersion>0.1.1.0</PackageVersion>
-        <InformationalVersion>0.1.1</InformationalVersion>
+        <AssemblyVersion>0.2.0.0</AssemblyVersion>
+        <PackageVersion>0.2.0.0</PackageVersion>
+        <InformationalVersion>0.2.0</InformationalVersion>
         <Authors>Aplulu</Authors>
-        <Copyright>Copyright (c) 2020 Aplulu</Copyright>
+        <Copyright>Copyright (c) 2021 Aplulu</Copyright>
         <RepositoryUrl>https://github.com/aplulu/StreamMarkers</RepositoryUrl>
     </PropertyGroup>
 
@@ -17,11 +17,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="BSML, Version=1.4.5.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="BSML">
         <HintPath>$(BeatSaberPath)\Plugins\BSML.dll</HintPath>
       </Reference>
-      <Reference Include="BS_Utils, Version=1.7.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>$(BeatSaberPath)\Plugins\BS_Utils.dll</HintPath>
+      <Reference Include="Hive.Versioning">
+        <HintPath>$(BeatSaberPath)\Libs\Hive.Versioning.dll</HintPath>
       </Reference>
       <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>$(BeatSaberPath)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
@@ -38,8 +38,8 @@
       <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
         <HintPath>$(BeatSaberPath)\Libs\Newtonsoft.Json.dll</HintPath>
       </Reference>
-      <Reference Include="SemVer, Version=1.2.2.0, Culture=neutral, PublicKeyToken=a89bb7dc6f7a145c">
-        <HintPath>$(BeatSaberPath)\Libs\SemVer.dll</HintPath>
+      <Reference Include="SiraUtil">
+        <HintPath>$(BeatSaberPath)\Plugins\SiraUtil.dll</HintPath>
       </Reference>
       <Reference Include="System.Net" />
       <Reference Include="System.Net.Http" />
@@ -48,6 +48,12 @@
       </Reference>
       <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>$(BeatSaberPath)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      </Reference>
+      <Reference Include="Zenject">
+        <HintPath>$(BeatSaberPath)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+      </Reference>
+      <Reference Include="Zenject-usage">
+        <HintPath>$(BeatSaberPath)\Beat Saber_Data\Managed\Zenject-usage.dll</HintPath>
       </Reference>
     </ItemGroup>
 

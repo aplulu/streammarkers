@@ -63,12 +63,12 @@ namespace StreamMarkers.Twitch
                 sc.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 sc.Headers.Add("Client-Id", Constants.CLIENT_ID);
 
-                var resp = await client.PostAsync(BASE_URL + "/helix/streams/markers", sc);
+                var resp = await client.PostAsync(BASE_URL + "/helix/streams/markers", sc).ConfigureAwait(false);
                 if (!resp.IsSuccessStatusCode)
                 {
                     throw new TwitchAPIException($"Server returned status code={resp.StatusCode}");
                 }
-                var respContent = await resp.Content.ReadAsStringAsync();
+                var respContent = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
             finally
             {
@@ -93,13 +93,13 @@ namespace StreamMarkers.Twitch
             var client = new HttpClient();
             try
             {
-                var resp = await client.PostAsync(OAUTH_URL + "/token", fc);
+                var resp = await client.PostAsync(OAUTH_URL + "/token", fc).ConfigureAwait(false);
                 if (!resp.IsSuccessStatusCode)
                 {
                     throw new TwitchAPIException($"Server returned status code={resp.StatusCode}");
                 }
                 
-                var respContent = await resp.Content.ReadAsStringAsync();
+                var respContent = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
             
                 var respToken = JsonConvert.DeserializeObject<TokenResponse>(respContent);
 
@@ -131,12 +131,12 @@ namespace StreamMarkers.Twitch
             var client = new HttpClient();
             try
             {
-                var resp = await client.PostAsync(OAUTH_URL + "/token", fc);
+                var resp = await client.PostAsync(OAUTH_URL + "/token", fc).ConfigureAwait(false);
                 if (!resp.IsSuccessStatusCode)
                 {
                     throw new TwitchAPIException($"Server returned status code={resp.StatusCode}");
                 }
-                var respContent = await resp.Content.ReadAsStringAsync();
+                var respContent = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             
                 var respToken = JsonConvert.DeserializeObject<TokenResponse>(respContent);

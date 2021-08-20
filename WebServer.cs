@@ -6,20 +6,34 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamMarkers.Managers;
 using StreamMarkers.Twitch;
+using Zenject;
 
 namespace StreamMarkers
 {
-    internal static class WebServer
+    public class WebServer: IInitializable, IDisposable
     {
         delegate void RequestHandler(HttpListenerRequest req, HttpListenerResponse resp);
 
         public static string ListenAddress { get; private set; } = "localhost:7710";
-        private static HttpListener _listener;
-        private static Dictionary<string, RequestHandler> _handlers = new Dictionary<string, RequestHandler>();
-        private static SynchronizationContext _context;
+        private HttpListener _listener;
+        private Dictionary<string, RequestHandler> _handlers = new Dictionary<string, RequestHandler>();
+        private SynchronizationContext _context;
+        [Inject] private CredentialProvider _credentialProvider = null;
 
-        public static void Start(SynchronizationContext context)
+        public void Initialize()
+        {
+            _context = SynchronizationContext.Current;
+            Start(_context);
+        }
+
+        public void Dispose()
+        {
+            Stop();
+        }
+        
+        public void Start(SynchronizationContext context)
         {
             _context = context;
             _handlers.Clear();
@@ -32,7 +46,7 @@ namespace StreamMarkers
             _listener.BeginGetContext(OnRequested, null);
         }
         
-        public static void Stop()
+        public void Stop()
         {
             if (_listener != null)
             {
@@ -41,7 +55,7 @@ namespace StreamMarkers
             }
         }
 
-        static void OnRequested(IAsyncResult ar)
+        void OnRequested(IAsyncResult ar)
         {
             if (!_listener.IsListening)
                 return;
@@ -59,7 +73,7 @@ namespace StreamMarkers
             }
         }
 
-        private static void HandleRequest(HttpListenerContext ctx)
+        private void HandleRequest(HttpListenerContext ctx)
         {
             var req = ctx.Request;
             var resp = ctx.Response;
@@ -89,7 +103,7 @@ namespace StreamMarkers
         /**
          * コールバック処理
          */
-        private static void OnCallback(HttpListenerRequest req, HttpListenerResponse resp)
+        private void OnCallback(HttpListenerRequest req, HttpListenerResponse resp)
         {
             var error = req.QueryString.Get("error");
             if (error != null)
@@ -111,8 +125,7 @@ namespace StreamMarkers
 
                 _context.Post((state) =>
                 {
-                    PluginConfig.Instance.SetToken(token);
-                    Plugin.Instance.SettingsViewController.UpdateLoginState();
+                    _credentialProvider.SetToken(token);
                 }, null);
 
                 ShowMessage(resp, 200, "Login Complete", "You are now logged in, please return to Beat Saber.");
