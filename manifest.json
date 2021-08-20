@@ -2,18 +2,13 @@
   "$schema": "",
   "author": "Aplulu",
   "description": "A mod that creates Twitch StreamMarkers for each Beat Saber song played.",
-  "gameVersion": "1.13.2",
+  "gameVersion": "1.16.4",
   "id": "StreamMarkers",
   "name": "StreamMarkers",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "dependsOn": {
     "BSIPA": "^4.1.4",
-    "BeatSaberMarkupLanguage": "^1.4.5",
-    "BS Utils": "^1.7.0"
-  },
-  "features": [
-    "print",
-    "debug",
-    "warn"
-  ]
+    "BeatSaberMarkupLanguage": "^1.5.4",
+    "SiraUtil": "^2.5.7"
+  }
 }
