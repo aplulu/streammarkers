@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using StreamMarkers.Twitch;
 using Zenject;
 
@@ -22,7 +22,6 @@ namespace StreamMarkers.Managers
 
         public void Initialize()
         {
-            _log.Logger.Info("Initialize");
             var context = SynchronizationContext.Current;
             Task.Run(async () =>
             {
