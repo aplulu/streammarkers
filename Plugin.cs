@@ -23,14 +23,14 @@ namespace StreamMarkers
             var conf = config.Generated<PluginConfig>();
             PluginConfig.Instance = conf;
 
-            injector.On<PCAppInit>().Pseudo(container =>
+            injector.UseLogger(logger);
+            injector.Install(Location.App, container =>
             {
-                container.BindLoggerAsSiraLogger(logger);
                 container.BindInstance(conf).AsSingle();
             });
-            injector.OnApp<Installers.AppInstaller>();
-            injector.OnMenu<Installers.MenuInstaller>();
-            injector.OnGame<Installers.GameInstaller>();
+            injector.Install<Installers.AppInstaller>(Location.App);
+            injector.Install<Installers.MenuInstaller>(Location.Menu);
+            injector.Install<Installers.GameInstaller>(Location.Player);
         }
         
         public static void Log(IPALogger.Level level,
